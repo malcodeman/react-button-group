@@ -1,11 +1,15 @@
 import React from "react";
 import styled, { css } from "styled-components";
+import { withKnobs, boolean } from "@storybook/addon-knobs";
+import { action } from "@storybook/addon-actions";
+import { withA11y } from "@storybook/addon-a11y";
 
 import { ButtonGroup } from "../src";
 
 export default {
   title: "ButtonGroup",
   component: ButtonGroup,
+  decorators: [withKnobs, withA11y],
 };
 
 const StyledButton = styled.button`
@@ -28,21 +32,22 @@ const StyledButton = styled.button`
         `}
 `;
 
-export const Default = () => {
+export function Default() {
   const [selected, setSelected] = React.useState([0]);
+  const disabled = boolean("Disabled", false);
+
+  function onClick(event, index) {
+    setSelected([index]);
+    action("onClick")(event, index);
+  }
 
   return (
     <div>
-      <ButtonGroup
-        selected={selected}
-        onClick={(event, index) => {
-          setSelected([index]);
-        }}
-      >
+      <ButtonGroup disabled={disabled} selected={selected} onClick={onClick}>
         <StyledButton>One</StyledButton>
         <StyledButton>Two</StyledButton>
         <StyledButton>Three</StyledButton>
       </ButtonGroup>
     </div>
   );
-};
+}
